@@ -1,5 +1,6 @@
 import { ChevronDown } from 'lucide-react';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const faqs = [
   {
@@ -15,7 +16,7 @@ const faqs = [
   {
     question: 'Is there a free trial available?',
     answer:
-      'Yes! Most plans include a 7-day free trial. No credit card required. Cancel anytime during the trial period.',
+      'Yes! We offer a 2-hour free trial before subscription. No credit card required. You can test our service and decide if it meets your needs.',
   },
   {
     question: 'What is your refund policy?',
@@ -32,6 +33,11 @@ const faqs = [
     answer:
       'Yes! Our Premium and Professional plans support 4K Ultra HD streaming on compatible devices with sufficient internet speed (25+ Mbps recommended).',
   },
+  {
+    question: 'What payment methods do you accept?',
+    answer:
+      'We accept multiple payment methods including PayPal, credit/debit cards (Visa, Mastercard, American Express), and cryptocurrency for your convenience.',
+  },
 ];
 
 export function FAQ() {
@@ -41,7 +47,7 @@ export function FAQ() {
     <section id="faq" className="py-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-16">
-          <h2 className="text-4xl sm:text-5xl font-bold mb-4">
+          <h2 className="text-3xl sm:text-5xl font-bold mb-4">
             Frequently Asked <span className="text-cyan-400">Questions</span>
           </h2>
           <p className="text-xl text-gray-400">
@@ -61,9 +67,8 @@ export function FAQ() {
               >
                 <span className="font-semibold text-lg pr-4">{faq.question}</span>
                 <ChevronDown
-                  className={`text-cyan-400 flex-shrink-0 transition-transform ${
-                    openIndex === index ? 'transform rotate-180' : ''
-                  }`}
+                  className={`text-cyan-400 flex-shrink-0 transition-transform ${openIndex === index ? 'transform rotate-180' : ''
+                    }`}
                   size={24}
                 />
               </button>
@@ -79,9 +84,12 @@ export function FAQ() {
 
         <div className="mt-12 text-center">
           <p className="text-gray-400 mb-4">Still have questions?</p>
-          <button className="px-6 py-3 bg-gray-800 hover:bg-gray-700 rounded-lg font-semibold transition-all">
+          <Link
+            to="/contact"
+            className="inline-block px-6 py-3 bg-gray-800 hover:bg-gray-700 rounded-lg font-semibold transition-all"
+          >
             Contact Support
-          </button>
+          </Link>
         </div>
       </div>
     </section>

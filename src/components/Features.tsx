@@ -28,8 +28,8 @@ export function Features() {
     <section id="features" className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-950/50">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
-          <h2 className="text-4xl sm:text-5xl font-bold mb-4">
-            Why Choose <span className="text-cyan-400">deiptv</span>
+          <h2 className="text-3xl sm:text-5xl font-bold mb-4">
+            Why Choose <span className="text-cyan-400">deiptv8k</span>
           </h2>
           <p className="text-xl text-gray-400 max-w-2xl mx-auto">
             Premium features designed for the ultimate streaming experience

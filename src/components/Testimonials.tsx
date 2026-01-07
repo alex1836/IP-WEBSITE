@@ -1,75 +1,89 @@
-import { Star } from 'lucide-react';
-import { useState } from 'react';
+import { Star, User } from 'lucide-react';
 
 const testimonials = [
   {
-    name: 'Michael Rodriguez',
-    role: 'Sports Enthusiast',
+    name: 'Mike Johnson',
+    location: 'Texas, USA',
     content:
-      'Best IPTV service I have ever used. Zero buffering during live sports, crystal clear quality, and their support team is incredibly responsive.',
+      'Finally a service that actually works for NFL Sunday Ticket without buffering. Setup was super easy on my Firestick.',
     rating: 5,
   },
   {
-    name: 'Sarah Chen',
-    role: 'Movie Lover',
+    name: 'Sarah Connor',
+    location: 'California, USA',
     content:
-      'The VOD library is massive and the 4K quality is outstanding. Setup was incredibly easy and activation was instant. Highly recommend!',
+      'Switched from cable and saving $100 a month. The movie selection is insane, literally everything is there.',
     rating: 5,
   },
   {
-    name: 'James Williams',
-    role: 'Family Subscriber',
+    name: 'David Smith',
+    location: 'New York, USA',
     content:
-      'We can watch on multiple devices simultaneously with no issues. Great value for money and my kids love the variety of channels available.',
+      'Support helped me setup within 10 minutes. Great quality streams for Premier League and NBA.',
+    rating: 5,
+  },
+  {
+    name: 'James Wilson',
+    location: 'London, UK',
+    content:
+      'Best IPTV service I\'ve used. No freezing during big games. The 4K quality is actually real 4K.',
+    rating: 5,
+  },
+  {
+    name: 'Maria Garcia',
+    location: 'Madrid, Spain',
+    content:
+      'Customer service is top notch. They helped me set up on my Smart TV via WhatsApp in minutes.',
+    rating: 5,
+  },
+  {
+    name: 'Ahmed Khan',
+    location: 'Dubai, UAE',
+    content:
+      'Love the VOD section. So many movies and series updated daily. Worth every penny.',
     rating: 5,
   },
 ];
 
 export function Testimonials() {
-  const [active, setActive] = useState(0);
-
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8">
+    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-950/50">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
-          <h2 className="text-4xl sm:text-5xl font-bold mb-4">
-            Loved by <span className="text-cyan-400">Thousands</span>
+          <h2 className="text-3xl sm:text-5xl font-bold mb-4">
+            Trusted by <span className="text-cyan-400">Thousands</span>
           </h2>
           <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-            Join over 50,000 satisfied customers streaming worldwide
+            See what our happy customers are saying about their experience
           </p>
         </div>
 
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-gray-900 rounded-2xl p-8 md:p-12 border border-gray-800">
-            <div className="flex gap-1 mb-6 justify-center">
-              {[...Array(testimonials[active].rating)].map((_, i) => (
-                <Star key={i} className="text-yellow-400 fill-yellow-400" size={24} />
-              ))}
+        <div className="grid md:grid-cols-3 gap-6">
+          {testimonials.map((testimonial, index) => (
+            <div
+              key={index}
+              className="bg-gray-900 rounded-xl p-6 border border-gray-800 hover:border-cyan-500/50 transition-all text-center group"
+            >
+              <div className="w-12 h-12 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-cyan-500/30 group-hover:scale-110 transition-transform">
+                <User className="text-white" size={24} />
+              </div>
+
+              <div className="flex justify-center gap-1 mb-4">
+                {[...Array(testimonial.rating)].map((_, i) => (
+                  <Star key={i} className="text-yellow-400 fill-yellow-400" size={16} />
+                ))}
+              </div>
+
+              <blockquote className="text-gray-300 mb-6 leading-relaxed italic text-sm min-h-[60px]">
+                "{testimonial.content}"
+              </blockquote>
+
+              <div>
+                <div className="font-bold text-base text-white">{testimonial.name}</div>
+                <div className="text-cyan-400 text-xs">{testimonial.location}</div>
+              </div>
             </div>
-
-            <blockquote className="text-xl md:text-2xl text-gray-300 text-center mb-8 leading-relaxed">
-              "{testimonials[active].content}"
-            </blockquote>
-
-            <div className="text-center">
-              <div className="font-semibold text-lg">{testimonials[active].name}</div>
-              <div className="text-cyan-400">{testimonials[active].role}</div>
-            </div>
-          </div>
-
-          <div className="flex justify-center gap-3 mt-8">
-            {testimonials.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setActive(index)}
-                className={`w-3 h-3 rounded-full transition-all ${
-                  active === index ? 'bg-cyan-400 w-8' : 'bg-gray-700 hover:bg-gray-600'
-                }`}
-                aria-label={`View testimonial ${index + 1}`}
-              />
-            ))}
-          </div>
+          ))}
         </div>
       </div>
     </section>

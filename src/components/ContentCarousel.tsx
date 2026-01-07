@@ -1,5 +1,6 @@
 import { ChevronLeft, ChevronRight, Play } from 'lucide-react';
 import { useState, useRef } from 'react';
+import { Link } from 'react-router-dom';
 
 interface ContentItem {
   id: string;
@@ -113,9 +114,9 @@ function Carousel({ items, title }: CarouselProps) {
           setCanScrollLeft(scrollContainer.current.scrollLeft > 0);
           setCanScrollRight(
             scrollContainer.current.scrollLeft <
-              scrollContainer.current.scrollWidth -
-                scrollContainer.current.clientWidth -
-              10
+            scrollContainer.current.scrollWidth -
+            scrollContainer.current.clientWidth -
+            10
           );
         }
       }, 100);
@@ -184,7 +185,7 @@ export function ContentCarousel() {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <p className="text-cyan-400 font-semibold mb-2">150,000+ Latest VOD Titles Available</p>
-          <h2 className="text-4xl sm:text-5xl font-bold">
+          <h2 className="text-3xl sm:text-5xl font-bold">
             Stream <span className="text-cyan-400">Movies & Sports</span>
           </h2>
         </div>
@@ -198,9 +199,12 @@ export function ContentCarousel() {
           <p className="text-gray-400 text-lg mb-6">
             Say Goodbye to Cable Costs — The only TV subscription you need
           </p>
-          <button className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-lg font-semibold text-lg hover:shadow-lg hover:shadow-cyan-500/50 transition-all transform hover:scale-105">
+          <Link
+            to="/packages"
+            className="inline-block px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-lg font-semibold text-lg hover:shadow-lg hover:shadow-cyan-500/50 transition-all transform hover:scale-105"
+          >
             Explore Full Library
-          </button>
+          </Link>
         </div>
       </div>
     </section>

@@ -1,14 +1,31 @@
-import { Mail, MessageCircle, Facebook, Twitter, Instagram } from 'lucide-react';
+import { Mail, MessageCircle, Facebook, Twitter, Instagram, Phone } from 'lucide-react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 export function Footer() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleScroll = (id: string) => {
+    if (location.pathname !== '/') {
+      navigate('/');
+      setTimeout(() => {
+        const element = document.getElementById(id);
+        if (element) element.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    } else {
+      const element = document.getElementById(id);
+      if (element) element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <footer className="bg-gray-950 border-t border-gray-800 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <div className="grid md:grid-cols-4 gap-8 mb-8">
           <div>
-            <h3 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent mb-4">
-              deiptv
-            </h3>
+            <Link to="/" className="inline-block mb-4">
+              <img src="/logo.png" alt="deiptv8k" className="h-24 w-auto" />
+            </Link>
             <p className="text-gray-400 mb-4">
               Premium IPTV service with 20,000+ channels in stunning 4K quality.
             </p>
@@ -38,24 +55,24 @@ export function Footer() {
             <h4 className="font-semibold text-lg mb-4">Quick Links</h4>
             <ul className="space-y-2">
               <li>
-                <a href="#features" className="text-gray-400 hover:text-cyan-400 transition-colors">
+                <button onClick={() => handleScroll('features')} className="text-gray-400 hover:text-cyan-400 transition-colors">
                   Features
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#plans" className="text-gray-400 hover:text-cyan-400 transition-colors">
+                <button onClick={() => handleScroll('plans')} className="text-gray-400 hover:text-cyan-400 transition-colors">
                   Pricing
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#devices" className="text-gray-400 hover:text-cyan-400 transition-colors">
+                <button onClick={() => handleScroll('devices')} className="text-gray-400 hover:text-cyan-400 transition-colors">
                   Devices
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#faq" className="text-gray-400 hover:text-cyan-400 transition-colors">
+                <Link to="/faq-page" className="text-gray-400 hover:text-cyan-400 transition-colors">
                   FAQ
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -63,25 +80,22 @@ export function Footer() {
           <div>
             <h4 className="font-semibold text-lg mb-4">Support</h4>
             <ul className="space-y-2">
+
               <li>
-                <a href="#" className="text-gray-400 hover:text-cyan-400 transition-colors">
-                  Help Center
-                </a>
+                <Link to="/guide" className="text-gray-400 hover:text-cyan-400 transition-colors">
+                  Setup Guide
+                </Link>
               </li>
+
               <li>
-                <a href="#" className="text-gray-400 hover:text-cyan-400 transition-colors">
-                  Installation Guide
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-gray-400 hover:text-cyan-400 transition-colors">
-                  Tutorials
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-gray-400 hover:text-cyan-400 transition-colors">
+                <Link to="/contact" className="text-gray-400 hover:text-cyan-400 transition-colors">
                   Contact Us
-                </a>
+                </Link>
+              </li>
+              <li>
+                <Link to="/about" className="text-gray-400 hover:text-cyan-400 transition-colors">
+                  About Us
+                </Link>
               </li>
             </ul>
           </div>
@@ -91,11 +105,17 @@ export function Footer() {
             <ul className="space-y-3">
               <li className="flex items-center gap-2 text-gray-400">
                 <Mail size={18} className="text-cyan-400" />
-                <span>support@deiptv.com</span>
+                <span>support@deiptv8k.com</span>
               </li>
               <li className="flex items-center gap-2 text-gray-400">
                 <MessageCircle size={18} className="text-cyan-400" />
                 <span>24/7 Live Chat</span>
+              </li>
+              <li className="flex items-center gap-2 text-gray-400">
+                <Phone size={18} className="text-cyan-400" />
+                <a href="https://wa.me/message/HACCQ2SN2ZVNG1" target="_blank" rel="noopener noreferrer" className="hover:text-cyan-400 transition-colors">
+                  +1 (716) 328-0936
+                </a>
               </li>
             </ul>
           </div>
@@ -104,18 +124,18 @@ export function Footer() {
         <div className="border-t border-gray-800 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-gray-400 text-sm">
-              © 2024 deiptv. All rights reserved.
+              © 2024 deiptv8k. All rights reserved.
             </p>
             <div className="flex gap-6 text-sm">
-              <a href="#" className="text-gray-400 hover:text-cyan-400 transition-colors">
+              <Link to="/privacy" className="text-gray-400 hover:text-cyan-400 transition-colors">
                 Privacy Policy
-              </a>
-              <a href="#" className="text-gray-400 hover:text-cyan-400 transition-colors">
+              </Link>
+              <Link to="/terms" className="text-gray-400 hover:text-cyan-400 transition-colors">
                 Terms of Service
-              </a>
-              <a href="#" className="text-gray-400 hover:text-cyan-400 transition-colors">
+              </Link>
+              <Link to="/refund" className="text-gray-400 hover:text-cyan-400 transition-colors">
                 Refund Policy
-              </a>
+              </Link>
             </div>
           </div>
         </div>

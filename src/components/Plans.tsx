@@ -1,119 +1,166 @@
 import { Check, Star } from 'lucide-react';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface Plan {
   name: string;
-  monthlyPrice: number;
+  price: number;
+  period: string;
   features: string[];
   popular: boolean;
+  savings?: string;
 }
 
 const normalPlans: Plan[] = [
   {
-    name: 'Basic',
-    monthlyPrice: 9.99,
+    name: '1 Month',
+    price: 13.00,
+    period: '/month',
     features: [
-      '3,000+ Live Channels',
-      'SD Quality',
-      '1 Device',
-      'Email Support',
-      '3-Day Free Trial',
+      '+25,000 TV Channels',
+      '+42,000 Movies & Series',
+      'Catch Up / EPG',
+      'Ultra HD Picture Quality',
+      '24/7 Technical Assistance',
+      'AntiFreeze Technology',
+      'Fast & Stable',
     ],
     popular: false,
   },
   {
-    name: 'Standard',
-    monthlyPrice: 14.99,
+    name: '3 Months',
+    price: 24.00,
+    period: '/3 months',
     features: [
-      '8,000+ Live Channels',
-      'HD Quality',
-      '2 Devices',
-      'Email Support',
-      'Basic VOD Access',
+      '+25,000 TV Channels',
+      '+42,000 Movies & Series',
+      'Catch Up / EPG',
+      'Ultra HD Picture Quality',
+      '24/7 Technical Assistance',
+      'AntiFreeze Technology',
+      'Fast & Stable',
+    ],
+    popular: false,
+    savings: 'Save 15%',
+  },
+  {
+    name: '12 Months',
+    price: 59.00,
+    period: '/year',
+    features: [
+      '+25,000 TV Channels',
+      '+42,000 Movies & Series',
+      'Catch Up / EPG',
+      'Ultra HD Picture Quality',
+      '24/7 Technical Assistance',
+      'AntiFreeze Technology',
+      'Fast & Stable',
     ],
     popular: true,
+    savings: 'Save 35%',
   },
   {
-    name: 'Plus',
-    monthlyPrice: 19.99,
+    name: '6 Months',
+    price: 36.00,
+    period: '/6 months',
     features: [
-      '12,000+ Live Channels',
-      'Full HD Quality',
-      '3 Devices',
-      'Priority Support',
-      'Extended VOD Library',
+      '+25,000 TV Channels',
+      '+42,000 Movies & Series',
+      'Catch Up / EPG',
+      'Ultra HD Picture Quality',
+      '24/7 Technical Assistance',
+      'AntiFreeze Technology',
+      'Fast & Stable',
     ],
     popular: false,
+    savings: 'Save 25%',
   },
 ];
 
 const premiumPlans: Plan[] = [
   {
-    name: 'Premium',
-    monthlyPrice: 24.99,
+    name: '1 Month',
+    price: 15.00,
+    period: '/month',
     features: [
-      '15,000+ Live Channels',
-      '4K Ultra HD',
-      '4 Devices',
-      'Premium Support',
-      'Complete VOD Library',
-      'Ad-Free Experience',
+      '+50,000 TV Channels',
+      '+66,000 Movies & Series',
+      'Catch Up / EPG',
+      '4K / Ultra HD Picture Quality',
+      'Customized Content Options',
+      '24/7 Technical Assistance',
+      'AntiFreeze Technology',
+      'Fast & Stable',
     ],
     popular: false,
   },
   {
-    name: 'Ultimate',
-    monthlyPrice: 34.99,
+    name: '3 Months',
+    price: 34.00,
+    period: '/3 months',
     features: [
-      '20,000+ Live Channels',
-      '4K Ultra HD',
-      '6 Devices',
-      '24/7 Premium Support',
-      'Full VOD + Exclusive Content',
-      'Ad-Free Experience',
-      'Offline Downloads',
+      '+50,000 TV Channels',
+      '+66,000 Movies & Series',
+      'Catch Up / EPG',
+      '4K / Ultra HD Picture Quality',
+      'Customized Content Options',
+      '24/7 Technical Assistance',
+      'AntiFreeze Technology',
+      'Fast & Stable',
+    ],
+    popular: false,
+    savings: 'Save 15%',
+  },
+  {
+    name: '12 Months',
+    price: 86.00,
+    period: '/year',
+    features: [
+      '+50,000 TV Channels',
+      '+66,000 Movies & Series',
+      'Catch Up / EPG',
+      '4K / Ultra HD Picture Quality',
+      'Customized Content Options',
+      '24/7 Technical Assistance',
+      'AntiFreeze Technology',
+      'Fast & Stable',
     ],
     popular: true,
+    savings: 'Best Value',
   },
   {
-    name: 'Elite',
-    monthlyPrice: 44.99,
+    name: '6 Months',
+    price: 49.00,
+    period: '/6 months',
     features: [
-      '25,000+ Live Channels',
-      '8K Quality',
-      'Unlimited Devices',
-      'Dedicated Support',
-      'All Content + Early Access',
-      'Ad-Free Experience',
-      'Offline Downloads',
-      'Family Sharing',
+      '+50,000 TV Channels',
+      '+66,000 Movies & Series',
+      'Catch Up / EPG',
+      '4K / Ultra HD Picture Quality',
+      'Customized Content Options',
+      '24/7 Technical Assistance',
+      'AntiFreeze Technology',
+      'Fast & Stable',
     ],
     popular: false,
+    savings: 'Save 30%',
   },
 ];
-
-const billingPeriods = [
-  { label: '1 Month', value: 1, discount: 0 },
-  { label: '3 Months', value: 3, discount: 0.05 },
-  { label: '6 Months', value: 6, discount: 0.10 },
-  { label: '1 Year', value: 12, discount: 0.20 },
-];
-
-function calculatePrice(monthlyPrice: number, months: number, discount: number): number {
-  return Math.round(monthlyPrice * months * (1 - discount) * 100) / 100;
-}
 
 export function Plans() {
   const [activeTab, setActiveTab] = useState<'normal' | 'premium'>('normal');
-  const [billingPeriod, setBillingPeriod] = useState(0);
+  const navigate = useNavigate();
   const plans = activeTab === 'normal' ? normalPlans : premiumPlans;
-  const period = billingPeriods[billingPeriod];
+
+  const handleChoosePlan = (plan: Plan) => {
+    navigate('/checkout', { state: { plan } });
+  };
 
   return (
     <section id="plans" className="py-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
-          <h2 className="text-4xl sm:text-5xl font-bold mb-4">
+          <h2 className="text-3xl sm:text-5xl font-bold mb-4">
             Choose Your <span className="text-cyan-400">Perfect Plan</span>
           </h2>
           <p className="text-xl text-gray-400 max-w-2xl mx-auto">
@@ -121,108 +168,130 @@ export function Plans() {
           </p>
         </div>
 
-        <div className="flex flex-col sm:flex-row justify-center gap-4 mb-12">
+        <div className="flex justify-center gap-4 mb-12">
           <div className="flex justify-center gap-2 flex-wrap">
             <button
               onClick={() => setActiveTab('normal')}
-              className={`px-6 py-2 rounded-lg font-semibold transition-all text-sm ${
-                activeTab === 'normal'
-                  ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/30'
-                  : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-              }`}
+              className={`px-6 py-2 rounded-lg font-semibold transition-all text-sm ${activeTab === 'normal'
+                ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/30'
+                : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                }`}
             >
               Normal Plans
             </button>
             <button
               onClick={() => setActiveTab('premium')}
-              className={`px-6 py-2 rounded-lg font-semibold transition-all text-sm ${
-                activeTab === 'premium'
-                  ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/30'
-                  : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-              }`}
+              className={`px-6 py-2 rounded-lg font-semibold transition-all text-sm ${activeTab === 'premium'
+                ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/30'
+                : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                }`}
             >
               Premium Plans
             </button>
           </div>
-
-          <div className="flex justify-center gap-2 flex-wrap">
-            {billingPeriods.map((billing, index) => (
-              <button
-                key={index}
-                onClick={() => setBillingPeriod(index)}
-                className={`px-4 py-2 rounded-lg font-semibold transition-all text-sm ${
-                  billingPeriod === index
-                    ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/30'
-                    : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-                }`}
-              >
-                {billing.label}
-              </button>
-            ))}
-          </div>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto transition-all duration-500">
-          {plans.map((plan, index) => {
-            const totalPrice = calculatePrice(plan.monthlyPrice, period.value, period.discount);
-            const pricePerMonth = (totalPrice / period.value).toFixed(2);
-            const discount = period.discount > 0 ? Math.round(period.discount * 100) : 0;
-
-            return (
-              <div
-                key={index}
-                className={`bg-gray-900 rounded-2xl p-8 border ${
-                  plan.popular
-                    ? 'border-cyan-500 shadow-lg shadow-cyan-500/20 transform scale-105'
-                    : 'border-gray-800'
-                } relative hover:border-cyan-500/50 transition-all animate-fadeIn`}
-              >
-                {plan.popular && (
-                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                    <div className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-4 py-1 rounded-full text-sm font-semibold flex items-center gap-1">
-                      <Star size={14} />
-                      Most Popular
-                    </div>
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto transition-all duration-500">
+          {plans.map((plan, index) => (
+            <div
+              key={index}
+              className={`bg-gray-900 rounded-2xl p-8 border border-cyan-500 ${plan.popular
+                ? 'shadow-lg shadow-cyan-500/20 transform scale-105 z-10'
+                : ''
+                } relative transition-all animate-fadeIn flex flex-col`}
+            >
+              {plan.popular && (
+                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 w-full text-center">
+                  <div className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-4 py-1 rounded-full text-sm font-semibold inline-flex items-center gap-1 shadow-lg">
+                    <Star size={14} fill="currentColor" />
+                    Most Popular
                   </div>
-                )}
-
-                <div className="text-center mb-6">
-                  <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
-                  <div className="flex items-baseline justify-center mb-2">
-                    <span className="text-5xl font-bold text-cyan-400">${totalPrice.toFixed(2)}</span>
-                    <span className="text-gray-400 ml-2">/{period.label.toLowerCase()}</span>
-                  </div>
-                  <p className="text-gray-500 text-sm">
-                    ${pricePerMonth}/month
-                  </p>
-                  {discount > 0 && (
-                    <p className="text-green-400 text-sm font-semibold mt-1">
-                      Save {discount}%
-                    </p>
-                  )}
                 </div>
+              )}
 
-                <ul className="space-y-4 mb-8">
-                  {plan.features.map((feature, featureIndex) => (
-                    <li key={featureIndex} className="flex items-start gap-3">
-                      <Check className="text-cyan-400 flex-shrink-0 mt-0.5" size={20} />
-                      <span className="text-gray-300">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <button
-                  className={`w-full py-3 rounded-lg font-semibold transition-all ${
-                    plan.popular
-                      ? 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:shadow-lg hover:shadow-cyan-500/50'
-                      : 'bg-gray-800 hover:bg-gray-700'
-                  }`}
-                >
-                  Get Started
-                </button>
+              <div className="text-center mb-6">
+                <h3 className="text-xl font-bold mb-2">{plan.name}</h3>
+                <div className="flex items-baseline justify-center mb-2">
+                  <span className="text-4xl font-bold text-cyan-400">${plan.price}</span>
+                </div>
+                <p className="text-gray-400 text-sm mb-2">{plan.period}</p>
+                {plan.savings && (
+                  <p className="text-green-400 text-sm font-semibold">
+                    {plan.savings}
+                  </p>
+                )}
               </div>
-            );
-          })}
+
+              <ul className="space-y-4 mb-8 flex-grow">
+                {plan.features.map((feature, featureIndex) => (
+                  <li key={featureIndex} className="flex items-start gap-3">
+                    <Check className="text-cyan-400 flex-shrink-0 mt-0.5" size={18} />
+                    <span className="text-gray-300 text-sm">{feature}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <button
+                onClick={() => handleChoosePlan(plan)}
+                className={`w-full py-3 rounded-lg font-semibold transition-all ${plan.popular
+                  ? 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:shadow-lg hover:shadow-cyan-500/50'
+                  : 'bg-gray-800 hover:bg-gray-700'
+                  }`}
+              >
+                Choose Plan
+              </button>
+            </div>
+          ))}
+        </div>
+
+        {/* Trial Options Section */}
+        <div className="mt-16 flex flex-col md:flex-row justify-center gap-6">
+          {/* 2H Free Trial */}
+          <div className="bg-gray-900 border border-cyan-500/30 rounded-2xl p-8 max-w-sm w-full text-center relative overflow-hidden group hover:border-cyan-500 transition-all duration-300">
+            <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 to-blue-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+            <h3 className="text-2xl font-bold mb-2 text-white">2H Free Trial</h3>
+            <div className="text-3xl font-bold text-cyan-400 mb-2">$0.00</div>
+            <p className="text-gray-400 mb-6 text-sm">Quick test of our premium service.</p>
+
+            <a
+              href="https://wa.me/message/HACCQ2SN2ZVNG1"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="relative z-10 block w-full py-3 bg-gray-800 hover:bg-gray-700 text-cyan-400 border border-cyan-500/30 rounded-lg font-semibold transition-all hover:shadow-lg hover:shadow-cyan-500/20 cursor-pointer text-center"
+            >
+              Get Free Trial
+            </a>
+          </div>
+
+          {/* 24H Paid Pass */}
+          <div className="bg-gray-900 border border-cyan-500/30 rounded-2xl p-8 max-w-sm w-full text-center relative overflow-hidden group hover:border-cyan-500 transition-all duration-300">
+            <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 to-blue-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+            <h3 className="text-2xl font-bold mb-2 text-white">24H Pass</h3>
+            <div className="text-3xl font-bold text-cyan-400 mb-2">$4.00</div>
+            <p className="text-gray-400 mb-6 text-sm">Full day access to everything.</p>
+
+            <button
+              type="button"
+              onClick={() => handleChoosePlan({
+                name: '24H Pass',
+                price: 4.00,
+                period: '/24 hours',
+                features: [
+                  '+25,000 TV Channels',
+                  '+42,000 Movies & Series',
+                  'Full 24-hour access',
+                  'Ultra HD Picture Quality',
+                  '24/7 Technical Assistance'
+                ],
+                popular: false
+              })}
+              className="relative z-10 block w-full py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-lg font-semibold transition-all hover:shadow-lg hover:shadow-cyan-500/50 cursor-pointer"
+            >
+              Get 24H Pass
+            </button>
+          </div>
         </div>
       </div>
     </section>
