@@ -5,6 +5,7 @@ import { GuidePage } from './pages/GuidePage';
 import { PackagesPage } from './pages/PackagesPage';
 import { ResellerPage } from './pages/ResellerPage';
 import { BlogPage } from './pages/BlogPage';
+import { BlogPostDetail } from './pages/BlogPostDetail';
 import { PrivacyPolicy } from './pages/PrivacyPolicy';
 import { RefundPolicy } from './pages/RefundPolicy';
 import { TermsOfUse } from './pages/TermsOfUse';
@@ -39,6 +40,7 @@ function App() {
         <Route path="/guide" element={<GuidePage />} />
         <Route path="/reseller" element={<ResellerPage />} />
         <Route path="/blog" element={<BlogPage />} />
+        <Route path="/blog/:slug" element={<BlogPostDetail />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/refund" element={<RefundPolicy />} />
         <Route path="/terms" element={<TermsOfUse />} />

@@ -1,31 +1,7 @@
 import { Calendar, User, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
-const posts = [
-    {
-        title: 'The Future of IPTV Streaming in 2024',
-        excerpt: 'Discover how IPTV technology is evolving with 4K streaming, AI recommendations, and better compression algorithms.',
-        date: 'March 15, 2024',
-        author: 'Tech Team',
-        category: 'Technology',
-        image: 'https://images.unsplash.com/photo-1593784991095-a205069470b6?auto=format&fit=crop&q=80&w=1000',
-    },
-    {
-        title: 'How to Setup IPTV on Your Smart TV',
-        excerpt: 'A comprehensive guide to setting up your subscription on Samsung, LG, and Android TV devices.',
-        date: 'March 10, 2024',
-        author: 'Support Team',
-        category: 'Guides',
-        image: 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?auto=format&fit=crop&q=80&w=1000',
-    },
-    {
-        title: 'Top Sports Events to Watch This Month',
-        excerpt: 'Don\'t miss out on the biggest sporting events happening this month. Check our schedule.',
-        date: 'March 5, 2024',
-        author: 'Sports Editor',
-        category: 'Sports',
-        image: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=1000',
-    },
-];
+import posts from '../data/blogPosts.json';
 
 export function BlogPage() {
     return (
@@ -76,9 +52,12 @@ export function BlogPage() {
                                     {post.excerpt}
                                 </p>
 
-                                <button className="flex items-center gap-2 text-cyan-400 font-semibold hover:gap-3 transition-all">
+                                <Link
+                                    to={`/blog/${post.slug}`}
+                                    className="flex items-center gap-2 text-cyan-400 font-semibold hover:gap-3 transition-all"
+                                >
                                     Read More <ArrowRight size={16} />
-                                </button>
+                                </Link>
                             </div>
                         </div>
                     ))}
