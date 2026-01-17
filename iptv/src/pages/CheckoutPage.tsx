@@ -35,7 +35,9 @@ export function CheckoutPage() {
         const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
         try {
-            await emailjs.send(
+            console.log('EmailJS Config:', { SERVICE_ID, TEMPLATE_ID, PUBLIC_KEY: PUBLIC_KEY ? 'Set' : 'Missing' });
+
+            const response = await emailjs.send(
                 SERVICE_ID,
                 TEMPLATE_ID,
                 {
@@ -52,11 +54,27 @@ export function CheckoutPage() {
                 PUBLIC_KEY
             );
 
+            console.log('EmailJS Response:', response);
             toast.success('Order placed successfully! Check your email for details.');
             navigate('/thank-you');
         } catch (error: any) {
-            console.error('Error sending email:', error);
-            const errorMessage = error?.text || error?.message || 'Failed to place order. Please try again.';
+            console.error('EmailJS Error Details:', error);
+
+            let errorMessage = 'Failed to place order. Please try again.';
+
+            if (error?.text) {
+                errorMessage = `Email service error: ${error.text}`;
+            } else if (error?.message) {
+                errorMessage = error.message;
+            } else if (error?.status) {
+                errorMessage = `Email service returned status ${error.status}`;
+            }
+
+            // Check for specific EmailJS errors
+            if (!SERVICE_ID || !TEMPLATE_ID || !PUBLIC_KEY) {
+                errorMessage = 'Email service is not properly configured. Please contact support.';
+            }
+
             toast.error(errorMessage);
         } finally {
             setIsSubmitting(false);
