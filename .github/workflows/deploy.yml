@@ -8,14 +8,9 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./iptv
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          submodules: recursive
 
       - name: Install Node.js
         uses: actions/setup-node@v4
@@ -23,9 +18,11 @@ jobs:
           node-version: '20'
 
       - name: Install Dependencies
+        working-directory: ./iptv
         run: npm install
 
       - name: Build
+        working-directory: ./iptv
         run: npm run build
 
       - name: FTP Deploy
