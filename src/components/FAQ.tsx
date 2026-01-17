@@ -4,39 +4,39 @@ import { Link } from 'react-router-dom';
 
 const faqs = [
   {
-    question: 'How quickly can I start watching?',
+    question: 'How quickly can I start watching DeIPTV?',
     answer:
-      'Your account is activated instantly after payment. You can start streaming within minutes of signing up.',
+      'Your DeIPTV account is activated instantly after payment. You can start streaming our premium channels within minutes of signing up.',
   },
   {
-    question: 'What devices are supported?',
+    question: 'What devices are supported by DeIPTV?',
     answer:
-      'We support Smart TVs, Android, iOS, Fire TV, Apple TV, Roku, PC, Mac, and most streaming devices. You can watch on multiple devices simultaneously depending on your plan.',
+      'DeIPTV supports Smart TVs, Android, iOS, Fire TV, Apple TV, Roku, PC, Mac, and most streaming devices. You can watch on multiple devices simultaneously depending on your plan.',
   },
   {
-    question: 'Is there a free trial available?',
+    question: 'Is there a free DeIPTV trial available?',
     answer:
-      'Yes! We offer a 2-hour free trial before subscription. No credit card required. You can test our service and decide if it meets your needs.',
+      'Yes! We offer a free IPTV trial before subscription. No credit card required. You can test DeIPTV service quality and decide if it meets your needs.',
   },
   {
-    question: 'What is your refund policy?',
+    question: 'What is the DeIPTV refund policy?',
     answer:
-      'We offer a 7-day money-back guarantee. If you are not satisfied with our service, contact support within 7 days for a full refund.',
+      'We offer a 7-day money-back guarantee on all DeIPTV subscriptions. If you are not satisfied with our service, contact support within 7 days for a full refund.',
   },
   {
-    question: 'Do you offer technical support?',
+    question: 'Do you offer technical support for DeIPTV?',
     answer:
-      'Absolutely! Our support team is available 24/7 via live chat, email, and WhatsApp to help with any questions or technical issues.',
+      'Absolutely! Our DeIPTV support team is available 24/7 via live chat, email, and WhatsApp to help with any questions or technical issues.',
   },
   {
-    question: 'Can I watch in 4K quality?',
+    question: 'Can I watch DeIPTV in 4K quality?',
     answer:
-      'Yes! Our Premium and Professional plans support 4K Ultra HD streaming on compatible devices with sufficient internet speed (25+ Mbps recommended).',
+      'Yes! DeIPTV Premium and Professional plans support 4K Ultra HD streaming on compatible devices with sufficient internet speed (25+ Mbps recommended).',
   },
   {
-    question: 'What payment methods do you accept?',
+    question: 'What payment methods does DeIPTV accept?',
     answer:
-      'We accept multiple payment methods including PayPal, credit/debit cards (Visa, Mastercard, American Express), and cryptocurrency for your convenience.',
+      'DeIPTV accepts multiple payment methods including PayPal, credit/debit cards (Visa, Mastercard, American Express), and cryptocurrency for your convenience.',
   },
 ];
 

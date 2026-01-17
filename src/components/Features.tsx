@@ -3,23 +3,23 @@ import { Zap, Shield, Tv, Headphones } from 'lucide-react';
 const features = [
   {
     icon: Zap,
-    title: 'Lightning Fast',
-    description: 'Anti-freeze technology ensures smooth streaming with zero buffering, even during peak hours.',
+    title: 'Fastest IPTV Server',
+    description: 'Our anti-freeze IPTV technology ensures smooth streaming with zero buffering, even during major sports events.',
   },
   {
     icon: Shield,
-    title: 'Secure & Private',
-    description: 'Military-grade encryption keeps your data safe. No logging, complete privacy guaranteed.',
+    title: 'Secure IPTV Subscription',
+    description: 'Military-grade encryption keeps your viewing data safe. No logging, complete privacy guaranteed for all users.',
   },
   {
     icon: Tv,
-    title: '4K Ultra HD',
-    description: 'Watch your favorite content in stunning 4K resolution with HDR support on compatible devices.',
+    title: '4K IPTV Quality',
+    description: 'Watch your favorite channels and movies in stunning 4K Ultra HD resolution with HDR support.',
   },
   {
     icon: Headphones,
-    title: '24/7 Support',
-    description: 'Expert support team available around the clock via live chat, email, and WhatsApp.',
+    title: '24/7 Premium Support',
+    description: 'Expert support team available around the clock via live chat and WhatsApp to assist with your IPTV setup.',
   },
 ];
 
@@ -29,10 +29,10 @@ export function Features() {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-3xl sm:text-5xl font-bold mb-4">
-            Why Choose <span className="text-cyan-400">deiptv8k</span>
+            Why Choose <span className="text-cyan-400">DeIPTV</span> as Your Provider
           </h2>
           <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-            Premium features designed for the ultimate streaming experience
+            The best IPTV provider features designed for the ultimate streaming experience
           </p>
         </div>
 

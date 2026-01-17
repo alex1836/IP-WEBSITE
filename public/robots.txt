@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /private/
+Disallow: /admin/
 
 Sitemap: https://deiptv8k.com/sitemap.xml

@@ -28,7 +28,7 @@ export function Hero() {
       <div className="absolute inset-0 z-0">
         <img
           src="/hero-bg.jpg"
-          alt="Background"
+          alt="Premium IPTV service streaming 4K live TV channels, sports and movies - DeIPTV"
           className="w-full h-full object-cover opacity-40"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-gray-900/95 via-gray-900/80 to-gray-900/95"></div>
@@ -39,15 +39,15 @@ export function Hero() {
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8 animate-fade-in">
             <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold leading-tight">
-              Stream 20,000+
+              <span className="text-cyan-400">DeIPTV</span> Best Service 2026
               <span className="block bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-                Live TV Channels
+                20,000+ Live TV Channels
               </span>
             </h1>
 
             <p className="text-xl text-gray-400 leading-relaxed">
-              Experience premium IPTV with instant activation, anti-freeze technology,
-              and crystal-clear 4K quality. No buffering, no limits.
+              Experience premium <strong>IPTV streaming</strong> with instant activation, anti-freeze technology,
+              and crystal-clear <strong>4K IPTV quality</strong>. Watch live TV, sports, movies & series with no buffering, no limits.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4">
@@ -95,6 +95,8 @@ export function Hero() {
                   muted
                   loop
                   playsInline
+                  title="Preview of DeIPTV Premium Channels and Movies"
+                  aria-label="Video preview showing the variety of channels and high quality content available on DeIPTV"
                 />
               </div>
               <div className="grid grid-cols-3 gap-4">

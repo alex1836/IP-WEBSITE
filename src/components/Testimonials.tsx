@@ -5,42 +5,42 @@ const testimonials = [
     name: 'Mike Johnson',
     location: 'Texas, USA',
     content:
-      'Finally a service that actually works for NFL Sunday Ticket without buffering. Setup was super easy on my Firestick.',
+      'Finally a service that actually works for NFL Sunday Ticket without buffering. DeIPTV setup was super easy on my Firestick.',
     rating: 5,
   },
   {
     name: 'Sarah Connor',
     location: 'California, USA',
     content:
-      'Switched from cable and saving $100 a month. The movie selection is insane, literally everything is there.',
+      'Switched to DeIPTV from cable and saving $100 a month. The movie selection is insane, literally everything is there.',
     rating: 5,
   },
   {
     name: 'David Smith',
     location: 'New York, USA',
     content:
-      'Support helped me setup within 10 minutes. Great quality streams for Premier League and NBA.',
+      'Support helped me setup DeIPTV within 10 minutes. Great quality streams for Premier League and NBA.',
     rating: 5,
   },
   {
     name: 'James Wilson',
     location: 'London, UK',
     content:
-      'Best IPTV service I\'ve used. No freezing during big games. The 4K quality is actually real 4K.',
+      'Best IPTV service I\'ve used. No freezing during big games. The DeIPTV 4K quality is actually real 4K.',
     rating: 5,
   },
   {
     name: 'Maria Garcia',
     location: 'Madrid, Spain',
     content:
-      'Customer service is top notch. They helped me set up on my Smart TV via WhatsApp in minutes.',
+      'DeIPTV customer service is top notch. They helped me set up on my Smart TV via WhatsApp in minutes.',
     rating: 5,
   },
   {
     name: 'Ahmed Khan',
     location: 'Dubai, UAE',
     content:
-      'Love the VOD section. So many movies and series updated daily. Worth every penny.',
+      'Love the DeIPTV VOD section. So many movies and series updated daily. Worth every penny.',
     rating: 5,
   },
 ];

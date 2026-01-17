@@ -161,10 +161,10 @@ export function Plans() {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-3xl sm:text-5xl font-bold mb-4">
-            Choose Your <span className="text-cyan-400">Perfect Plan</span>
+            Choose Your <span className="text-cyan-400">DeIPTV Plan</span>
           </h2>
           <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-            Flexible pricing with instant activation. No hidden fees, cancel anytime.
+            Flexible DeIPTV pricing with instant activation. No hidden fees, cancel anytime.
           </p>
         </div>
 
@@ -177,7 +177,7 @@ export function Plans() {
                 : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
                 }`}
             >
-              Normal Plans
+              DeIPTV Normal
             </button>
             <button
               onClick={() => setActiveTab('premium')}
@@ -186,7 +186,7 @@ export function Plans() {
                 : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
                 }`}
             >
-              Premium Plans
+              DeIPTV Premium
             </button>
           </div>
         </div>

@@ -4,18 +4,18 @@ import { Link } from 'react-router-dom';
 const steps = [
   {
     icon: UserPlus,
-    title: 'Choose Your Plan',
-    description: 'Select the perfect subscription plan that fits your needs and budget.',
+    title: 'Choose DeIPTV Plan',
+    description: 'Select the perfect DeIPTV subscription plan that fits your needs and budget.',
   },
   {
     icon: CreditCard,
     title: 'Complete Payment',
-    description: 'Secure checkout with instant activation. Start watching in seconds.',
+    description: 'Secure checkout with instant DeIPTV activation. Start watching in seconds.',
   },
   {
     icon: PlayCircle,
-    title: 'Start Streaming',
-    description: 'Download the app, login with your credentials, and enjoy unlimited content.',
+    title: 'Start Streaming DeIPTV',
+    description: 'Download the app, login with your credentials, and enjoy unlimited DeIPTV content.',
   },
 ];
 

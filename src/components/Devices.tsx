@@ -18,10 +18,10 @@ export function Devices() {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-20">
           <h2 className="text-3xl sm:text-5xl font-bold mb-4">
-            Works on <span className="text-cyan-400">Everything</span>
+            DeIPTV Works on <span className="text-cyan-400">Everything</span>
           </h2>
           <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-            Stream on any device, anytime, anywhere
+            Stream DeIPTV on any device, anytime, anywhere
           </p>
         </div>
 
@@ -38,11 +38,11 @@ export function Devices() {
         </div>
 
         <div className="mt-32 text-center">
-          <h3 className="text-3xl sm:text-5xl font-bold text-white mb-12">Compatible with all <span className="text-cyan-400">devices</span></h3>
+          <h3 className="text-3xl sm:text-5xl font-bold text-white mb-12">DeIPTV is Compatible with all <span className="text-cyan-400">devices</span></h3>
           <div className="flex justify-center">
             <img
               src={deviceImage}
-              alt="Compatible Devices"
+              alt="DeIPTV Compatible Devices"
               className="max-w-full h-auto max-h-60 opacity-90 hover:opacity-100 transition-opacity"
             />
           </div>

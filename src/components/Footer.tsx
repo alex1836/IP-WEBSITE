@@ -24,26 +24,35 @@ export function Footer() {
         <div className="grid md:grid-cols-4 gap-8 mb-8">
           <div>
             <Link to="/" className="inline-block mb-4">
-              <img src="/logo.png" alt="deiptv8k" className="h-24 w-auto" />
+              <img src="/logo.png" alt="DeIPTV - Best IPTV Service Provider" className="h-24 w-auto" />
             </Link>
             <p className="text-gray-400 mb-4">
-              Premium IPTV service with 20,000+ channels in stunning 4K quality.
+              Premium IPTV service provider offering 20,000+ live TV channels, movies, and sports in stunning 4K quality.
             </p>
             <div className="flex gap-4">
               <a
-                href="#"
+                href="https://facebook.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Follow us on Facebook"
                 className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-cyan-500 transition-colors"
               >
                 <Facebook size={20} />
               </a>
               <a
-                href="#"
+                href="https://twitter.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Follow us on Twitter"
                 className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-cyan-500 transition-colors"
               >
                 <Twitter size={20} />
               </a>
               <a
-                href="#"
+                href="https://instagram.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Follow us on Instagram"
                 className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-cyan-500 transition-colors"
               >
                 <Instagram size={20} />
@@ -56,22 +65,22 @@ export function Footer() {
             <ul className="space-y-2">
               <li>
                 <button onClick={() => handleScroll('features')} className="text-gray-400 hover:text-cyan-400 transition-colors">
-                  Features
+                  IPTV Features
                 </button>
               </li>
               <li>
                 <button onClick={() => handleScroll('plans')} className="text-gray-400 hover:text-cyan-400 transition-colors">
-                  Pricing
+                  IPTV Pricing
                 </button>
               </li>
               <li>
                 <button onClick={() => handleScroll('devices')} className="text-gray-400 hover:text-cyan-400 transition-colors">
-                  Devices
+                  Supported Devices
                 </button>
               </li>
               <li>
                 <Link to="/faq-page" className="text-gray-400 hover:text-cyan-400 transition-colors">
-                  FAQ
+                  IPTV FAQ
                 </Link>
               </li>
             </ul>
@@ -83,18 +92,18 @@ export function Footer() {
 
               <li>
                 <Link to="/guide" className="text-gray-400 hover:text-cyan-400 transition-colors">
-                  Setup Guide
+                  Installation Guide
                 </Link>
               </li>
 
               <li>
                 <Link to="/contact" className="text-gray-400 hover:text-cyan-400 transition-colors">
-                  Contact Us
+                  Contact Support
                 </Link>
               </li>
               <li>
                 <Link to="/about" className="text-gray-400 hover:text-cyan-400 transition-colors">
-                  About Us
+                  About DeIPTV
                 </Link>
               </li>
             </ul>
@@ -109,7 +118,7 @@ export function Footer() {
               </li>
               <li className="flex items-center gap-2 text-gray-400">
                 <MessageCircle size={18} className="text-cyan-400" />
-                <span>24/7 Live Chat</span>
+                <span>24/7 Live Chat Support</span>
               </li>
               <li className="flex items-center gap-2 text-gray-400">
                 <Phone size={18} className="text-cyan-400" />
@@ -124,7 +133,7 @@ export function Footer() {
         <div className="border-t border-gray-800 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-gray-400 text-sm">
-              © 2024 deiptv8k. All rights reserved.
+              © 2026 DeIPTV. All rights reserved.
             </p>
             <div className="flex gap-6 text-sm">
               <Link to="/privacy" className="text-gray-400 hover:text-cyan-400 transition-colors">
