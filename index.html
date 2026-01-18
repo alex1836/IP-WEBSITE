@@ -70,31 +70,29 @@
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "Service",
-    "name": "DeIPTV Premium Streaming",
-    "serviceType": "IPTV Streaming Service",
-    "provider": {
-      "@type": "Organization",
+    "@type": "Product",
+    "name": "DeIPTV Premium IPTV Subscription",
+    "image": "https://deiptv8k.com/hero-bg.jpg",
+    "description": "Premium IPTV service with 20,000+ live TV channels, movies, sports & series in 4K HD quality. Anti-freeze technology and 24/7 support.",
+    "brand": {
+      "@type": "Brand",
       "name": "DeIPTV"
     },
-    "areaServed": "Worldwide",
-    "hasOfferCatalog": {
-      "@type": "OfferCatalog",
-      "name": "IPTV Subscription Plans",
-      "itemListElement": [
-        {
-          "@type": "Offer",
-          "itemOffered": {
-            "@type": "Service",
-            "name": "Premium IPTV Service"
-          }
-        }
-      ]
+    "offers": {
+      "@type": "AggregateOffer",
+      "url": "https://deiptv8k.com",
+      "priceCurrency": "USD",
+      "lowPrice": "13",
+      "highPrice": "86",
+      "offerCount": "8",
+      "availability": "https://schema.org/InStock"
     },
     "aggregateRating": {
       "@type": "AggregateRating",
       "ratingValue": "4.8",
-      "reviewCount": "1250"
+      "bestRating": "5",
+      "worstRating": "1",
+      "ratingCount": "1250"
     }
   }
   </script>
