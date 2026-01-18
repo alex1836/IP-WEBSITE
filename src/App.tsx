@@ -17,6 +17,7 @@ import { HelpCenter } from './pages/HelpCenter';
 import { SetupGuide } from './pages/SetupGuide';
 import { Tutorials } from './pages/Tutorials';
 import { ThankYouPage } from './pages/ThankYouPage';
+import { DMCAPage } from './pages/DMCAPage';
 import { Navigation } from './components/Navigation';
 import { Footer } from './components/Footer';
 
@@ -52,6 +53,7 @@ function App() {
         <Route path="/setup" element={<SetupGuide />} />
         <Route path="/tutorials" element={<Tutorials />} />
         <Route path="/thank-you" element={<ThankYouPage />} />
+        <Route path="/dmca" element={<DMCAPage />} />
       </Routes>
       <Footer />
     </div>

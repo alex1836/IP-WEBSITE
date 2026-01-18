@@ -145,6 +145,9 @@ export function Footer() {
               <Link to="/refund" className="text-gray-400 hover:text-cyan-400 transition-colors">
                 Refund Policy
               </Link>
+              <Link to="/dmca" className="text-gray-400 hover:text-cyan-400 transition-colors">
+                DMCA
+              </Link>
             </div>
           </div>
         </div>
