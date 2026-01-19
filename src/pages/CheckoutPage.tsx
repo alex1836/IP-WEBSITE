@@ -70,26 +70,13 @@ export function CheckoutPage() {
                     },
                     PUBLIC_KEY
                 ),
-                fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        chat_id: TELEGRAM_CHAT_ID,
-                        text: telegramMessage,
-                        parse_mode: 'HTML',
-                    }),
-                }).then(async (res) => {
-                    if (!res.ok) {
-                        const errorData = await res.json();
-                        console.error('Telegram API Error:', errorData);
-                    } else {
-                        console.log('Telegram message sent successfully');
-                    }
-                }).catch(err => {
-                    console.error('Telegram Fetch Error:', err);
-                })
+                // Telegram Notification using GET (More reliable for CORS)
+                fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${encodeURIComponent(telegramMessage)}&parse_mode=HTML`)
+                    .then(res => {
+                        if (!res.ok) console.error('Telegram API Error Status:', res.status);
+                        else console.log('Telegram sent!');
+                    })
+                    .catch(err => console.error('Telegram Network Error:', err))
             ]);
 
             toast.success('Order placed successfully! Check your email for details.');
