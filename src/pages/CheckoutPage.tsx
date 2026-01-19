@@ -1,5 +1,5 @@
 import { useLocation, Link, useNavigate } from 'react-router-dom';
-import { Check, Loader2, CreditCard, Wallet } from 'lucide-react';
+import { Check, Loader2, CreditCard } from 'lucide-react';
 import { useState, FormEvent } from 'react';
 import emailjs from '@emailjs/browser';
 import toast from 'react-hot-toast';
