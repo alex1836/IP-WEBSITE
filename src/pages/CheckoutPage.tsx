@@ -80,6 +80,15 @@ export function CheckoutPage() {
                         text: telegramMessage,
                         parse_mode: 'HTML',
                     }),
+                }).then(async (res) => {
+                    if (!res.ok) {
+                        const errorData = await res.json();
+                        console.error('Telegram API Error:', errorData);
+                    } else {
+                        console.log('Telegram message sent successfully');
+                    }
+                }).catch(err => {
+                    console.error('Telegram Fetch Error:', err);
                 })
             ]);
 
