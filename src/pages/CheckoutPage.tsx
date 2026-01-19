@@ -34,28 +34,59 @@ export function CheckoutPage() {
         const TEMPLATE_ID = 'template_c2tq4ns';  // Checkout template
         const PUBLIC_KEY = '5jt4ss4iP86wegTkN';
 
+        // Telegram Configuration
+        const TELEGRAM_BOT_TOKEN = '8506356791:AAGpd6AjISuiBNozm0dqlw8i6aj_zS07hk0';
+        const TELEGRAM_CHAT_ID = '7216494259';
+
+        const telegramMessage = `
+🚀 *New Order Placed!*
+━━━━━━━━━━━━━━━━━━
+👤 *Customer:* ${formData.firstName} ${formData.lastName}
+📧 *Email:* ${formData.email}
+📱 *WhatsApp:* ${formData.whatsapp || 'Not provided'}
+📦 *Plan:* ${plan.name} (${plan.period})
+💰 *Price:* $${plan.price}
+💳 *Method:* ${paymentMethod.toUpperCase()}
+📅 *Date:* ${new Date().toLocaleString()}
+━━━━━━━━━━━━━━━━━━
+        `.trim();
+
         try {
-            await emailjs.send(
-                SERVICE_ID,
-                TEMPLATE_ID,
-                {
-                    to_name: 'Admin',
-                    from_name: `${formData.firstName} ${formData.lastName}`,
-                    from_email: formData.email,
-                    whatsapp_number: formData.whatsapp || 'Not provided',
-                    plan_name: plan.name,
-                    plan_price: plan.price,
-                    plan_period: plan.period,
-                    payment_method: paymentMethod.toUpperCase(),
-                    order_date: new Date().toLocaleString()
-                },
-                PUBLIC_KEY
-            );
+            // Send both notifications in parallel
+            await Promise.all([
+                emailjs.send(
+                    SERVICE_ID,
+                    TEMPLATE_ID,
+                    {
+                        to_name: 'Admin',
+                        from_name: `${formData.firstName} ${formData.lastName}`,
+                        from_email: formData.email,
+                        whatsapp_number: formData.whatsapp || 'Not provided',
+                        plan_name: plan.name,
+                        plan_price: plan.price,
+                        plan_period: plan.period,
+                        payment_method: paymentMethod.toUpperCase(),
+                        order_date: new Date().toLocaleString()
+                    },
+                    PUBLIC_KEY
+                ),
+                fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        chat_id: TELEGRAM_CHAT_ID,
+                        text: telegramMessage,
+                        parse_mode: 'Markdown',
+                    }),
+                })
+            ]);
 
             toast.success('Order placed successfully! Check your email for details.');
             navigate('/thank-you');
         } catch (error: any) {
-            console.error('Error sending email:', error);
+            console.error('Error processing order:', error);
             const errorMessage = error?.text || error?.message || 'Failed to place order. Please try again.';
             toast.error(errorMessage);
         } finally {
