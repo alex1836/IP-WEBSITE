@@ -52,32 +52,33 @@ export function CheckoutPage() {
         `.trim();
 
         try {
-            // Send both notifications in parallel
-            await Promise.all([
-                emailjs.send(
-                    SERVICE_ID,
-                    TEMPLATE_ID,
-                    {
-                        to_name: 'Admin',
-                        from_name: `${formData.firstName} ${formData.lastName}`,
-                        from_email: formData.email,
-                        whatsapp_number: formData.whatsapp || 'Not provided',
-                        plan_name: plan.name,
-                        plan_price: plan.price,
-                        plan_period: plan.period,
-                        payment_method: paymentMethod.toUpperCase(),
-                        order_date: new Date().toLocaleString()
-                    },
-                    PUBLIC_KEY
-                ),
-                // Telegram Notification using GET (More reliable for CORS)
-                fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${encodeURIComponent(telegramMessage)}&parse_mode=HTML`)
-                    .then(res => {
-                        if (!res.ok) console.error('Telegram API Error Status:', res.status);
-                        else console.log('Telegram sent!');
-                    })
-                    .catch(err => console.error('Telegram Network Error:', err))
-            ]);
+            // 1. Send Telegram Notification first and wait for it
+            const telegramUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${encodeURIComponent(telegramMessage)}&parse_mode=HTML`;
+
+            try {
+                await fetch(telegramUrl);
+                console.log('Telegram notification sent');
+            } catch (teleError) {
+                console.error('Telegram failed but continuing with EmailJS:', teleError);
+            }
+
+            // 2. Send EmailJS Notification
+            await emailjs.send(
+                SERVICE_ID,
+                TEMPLATE_ID,
+                {
+                    to_name: 'Admin',
+                    from_name: `${formData.firstName} ${formData.lastName}`,
+                    from_email: formData.email,
+                    whatsapp_number: formData.whatsapp || 'Not provided',
+                    plan_name: plan.name,
+                    plan_price: plan.price,
+                    plan_period: plan.period,
+                    payment_method: paymentMethod.toUpperCase(),
+                    order_date: new Date().toLocaleString()
+                },
+                PUBLIC_KEY
+            );
 
             toast.success('Order placed successfully! Check your email for details.');
             navigate('/thank-you');
