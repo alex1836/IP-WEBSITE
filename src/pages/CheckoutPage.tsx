@@ -39,15 +39,15 @@ export function CheckoutPage() {
         const TELEGRAM_CHAT_ID = '7216494259';
 
         const telegramMessage = `
-🚀 *New Order Placed!*
+<b>🚀 New Order Placed!</b>
 ━━━━━━━━━━━━━━━━━━
-👤 *Customer:* ${formData.firstName} ${formData.lastName}
-📧 *Email:* ${formData.email}
-📱 *WhatsApp:* ${formData.whatsapp || 'Not provided'}
-📦 *Plan:* ${plan.name} (${plan.period})
-💰 *Price:* $${plan.price}
-💳 *Method:* ${paymentMethod.toUpperCase()}
-📅 *Date:* ${new Date().toLocaleString()}
+<b>👤 Customer:</b> ${formData.firstName} ${formData.lastName}
+<b>📧 Email:</b> ${formData.email}
+<b>📱 WhatsApp:</b> ${formData.whatsapp || 'Not provided'}
+<b>📦 Plan:</b> ${plan.name} (${plan.period})
+<b>💰 Price:</b> $${plan.price}
+<b>💳 Method:</b> ${paymentMethod.toUpperCase()}
+<b>📅 Date:</b> ${new Date().toLocaleString()}
 ━━━━━━━━━━━━━━━━━━
         `.trim();
 
@@ -78,7 +78,7 @@ export function CheckoutPage() {
                     body: JSON.stringify({
                         chat_id: TELEGRAM_CHAT_ID,
                         text: telegramMessage,
-                        parse_mode: 'Markdown',
+                        parse_mode: 'HTML',
                     }),
                 })
             ]);
