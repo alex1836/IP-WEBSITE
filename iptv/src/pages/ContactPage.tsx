@@ -1,7 +1,10 @@
 import { useState, FormEvent } from 'react';
-import { Mail, MessageCircle, MapPin, Phone, Loader2 } from 'lucide-react';
-import emailjs from '@emailjs/browser';
+import { Mail, MessageCircle, MapPin, Phone, Loader2, Shield } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { contactFormSchema } from '../utils/validation';
+import { useRateLimit, formatTimeRemaining } from '../utils/rateLimit';
+import { ZodError } from 'zod';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 
 export function ContactPage() {
     const [formData, setFormData] = useState({
@@ -11,30 +14,67 @@ export function ContactPage() {
         subject: 'General Inquiry',
         message: ''
     });
+    const [honeypot, setHoneypot] = useState(''); // Bot detection
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+
+    // Rate limiting: 3 attempts per minute
+    const { checkRateLimit, isBlocked } = useRateLimit(3, 60000);
+
+    // reCAPTCHA
+    const { executeRecaptcha } = useGoogleReCaptcha();
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        setIsSubmitting(true);
 
-        // EmailJS Configuration
-        const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
-        const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID_CONTACT;
-        const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+        // Bot detection - honeypot field should be empty
+        if (honeypot) {
+            return;
+        }
 
+        // Check rate limit
+        const rateLimitCheck = checkRateLimit();
+        if (!rateLimitCheck.allowed) {
+            const timeRemaining = rateLimitCheck.resetTime
+                ? formatTimeRemaining(rateLimitCheck.resetTime)
+                : '1 minute';
+            toast.error(`Too many attempts. Please try again in ${timeRemaining}.`);
+            return;
+        }
+
+        // Validate form data with Zod
         try {
-            await emailjs.send(
-                SERVICE_ID,
-                TEMPLATE_ID,
-                {
-                    from_name: `${formData.firstName} ${formData.lastName}`,
-                    from_email: formData.email,
-                    subject: formData.subject,
-                    message: formData.message,
-                    to_name: 'Admin'
+            const validatedData = contactFormSchema.parse(formData);
+            setValidationErrors({});
+
+            setIsSubmitting(true);
+
+            // Get reCAPTCHA token
+            if (!executeRecaptcha) {
+                toast.error('reCAPTCHA not ready');
+                setIsSubmitting(false);
+                return;
+            }
+
+            const token = await executeRecaptcha('contact_form');
+
+            // Send to Backend API
+            const response = await fetch('http://localhost:3001/api/contact', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
                 },
-                PUBLIC_KEY
-            );
+                body: JSON.stringify({
+                    ...validatedData,
+                    recaptchaToken: token
+                }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to send message');
+            }
 
             toast.success('Message sent successfully! We will get back to you soon.');
             setFormData({
@@ -44,10 +84,20 @@ export function ContactPage() {
                 subject: 'General Inquiry',
                 message: ''
             });
-        } catch (error: any) {
-            console.error('Error sending email:', error);
-            const errorMessage = error?.text || error?.message || 'Failed to send message. Please try again later.';
-            toast.error(errorMessage);
+        } catch (error) {
+            if (error instanceof ZodError) {
+                const errors: Record<string, string> = {};
+                error.issues.forEach((err: any) => {
+                    if (err.path[0]) {
+                        errors[err.path[0].toString()] = err.message;
+                    }
+                });
+                setValidationErrors(errors);
+                toast.error('Please check the form for errors.');
+            } else {
+                console.error('Submission error:', error);
+                toast.error('Failed to send message. Please try again later.');
+            }
         } finally {
             setIsSubmitting(false);
         }
@@ -59,6 +109,14 @@ export function ContactPage() {
             ...prev,
             [id]: value
         }));
+        // Clear validation error for this field
+        if (validationErrors[id]) {
+            setValidationErrors(prev => {
+                const newErrors = { ...prev };
+                delete newErrors[id];
+                return newErrors;
+            });
+        }
     };
 
     return (
@@ -143,9 +201,12 @@ export function ContactPage() {
                                     value={formData.firstName}
                                     onChange={handleChange}
                                     required
-                                    className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-400 transition-colors"
+                                    className={`w-full bg-gray-700 border ${validationErrors.firstName ? 'border-red-500' : 'border-gray-600'} rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-400 transition-colors`}
                                     placeholder="John"
                                 />
+                                {validationErrors.firstName && (
+                                    <p className="text-red-400 text-xs mt-1">{validationErrors.firstName}</p>
+                                )}
                             </div>
                             <div>
                                 <label htmlFor="lastName" className="block text-sm font-medium text-gray-400 mb-1">Last Name</label>
@@ -155,11 +216,29 @@ export function ContactPage() {
                                     value={formData.lastName}
                                     onChange={handleChange}
                                     required
-                                    className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-400 transition-colors"
+                                    className={`w-full bg-gray-700 border ${validationErrors.lastName ? 'border-red-500' : 'border-gray-600'} rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-400 transition-colors`}
                                     placeholder="Doe"
                                 />
+                                {validationErrors.lastName && (
+                                    <p className="text-red-400 text-xs mt-1">{validationErrors.lastName}</p>
+                                )}
                             </div>
                         </div>
+
+                        {/* Honeypot field - hidden from users, catches bots */}
+                        <div className="hidden" aria-hidden="true">
+                            <label htmlFor="website">Website</label>
+                            <input
+                                type="text"
+                                id="website"
+                                name="website"
+                                value={honeypot}
+                                onChange={(e) => setHoneypot(e.target.value)}
+                                tabIndex={-1}
+                                autoComplete="off"
+                            />
+                        </div>
+
                         <div>
                             <label htmlFor="email" className="block text-sm font-medium text-gray-400 mb-1">Email Address</label>
                             <input
@@ -168,9 +247,12 @@ export function ContactPage() {
                                 value={formData.email}
                                 onChange={handleChange}
                                 required
-                                className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-400 transition-colors"
+                                className={`w-full bg-gray-700 border ${validationErrors.email ? 'border-red-500' : 'border-gray-600'} rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-400 transition-colors`}
                                 placeholder="john@example.com"
                             />
+                            {validationErrors.email && (
+                                <p className="text-red-400 text-xs mt-1">{validationErrors.email}</p>
+                            )}
                         </div>
                         <div>
                             <label htmlFor="subject" className="block text-sm font-medium text-gray-400 mb-1">Subject</label>
@@ -178,13 +260,16 @@ export function ContactPage() {
                                 id="subject"
                                 value={formData.subject}
                                 onChange={handleChange}
-                                className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-400 transition-colors"
+                                className={`w-full bg-gray-700 border ${validationErrors.subject ? 'border-red-500' : 'border-gray-600'} rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-400 transition-colors`}
                             >
                                 <option>General Inquiry</option>
                                 <option>Technical Support</option>
                                 <option>Billing Question</option>
                                 <option>Refund Request</option>
                             </select>
+                            {validationErrors.subject && (
+                                <p className="text-red-400 text-xs mt-1">{validationErrors.subject}</p>
+                            )}
                         </div>
                         <div>
                             <label htmlFor="message" className="block text-sm font-medium text-gray-400 mb-1">Message</label>
@@ -194,10 +279,21 @@ export function ContactPage() {
                                 onChange={handleChange}
                                 required
                                 rows={4}
-                                className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-400 transition-colors"
+                                className={`w-full bg-gray-700 border ${validationErrors.message ? 'border-red-500' : 'border-gray-600'} rounded-lg px-4 py-2 text-white focus:outline-none focus:border-cyan-400 transition-colors`}
                                 placeholder="How can we help you?"
                             ></textarea>
+                            {validationErrors.message && (
+                                <p className="text-red-400 text-xs mt-1">{validationErrors.message}</p>
+                            )}
                         </div>
+
+                        {/* Rate limit warning */}
+                        {isBlocked && (
+                            <div className="flex items-center gap-2 p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+                                <Shield className="text-yellow-400" size={20} />
+                                <p className="text-yellow-400 text-sm">Rate limit active. Please wait before submitting again.</p>
+                            </div>
+                        )}
                         <button
                             type="submit"
                             disabled={isSubmitting}

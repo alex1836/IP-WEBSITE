@@ -1,9 +1,12 @@
 import { useLocation, Link, useNavigate } from 'react-router-dom';
-import { Check, Loader2, CreditCard, Wallet } from 'lucide-react';
+import { Check, Loader2, CreditCard, Shield } from 'lucide-react';
 import { useState, FormEvent } from 'react';
-import emailjs from '@emailjs/browser';
 import toast from 'react-hot-toast';
 import { FaBitcoin, FaPaypal } from 'react-icons/fa';
+import { checkoutFormSchema } from '../utils/validation';
+import { useRateLimit, formatTimeRemaining } from '../utils/rateLimit';
+import { ZodError } from 'zod';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 
 export function CheckoutPage() {
     const location = useLocation();
@@ -16,66 +19,94 @@ export function CheckoutPage() {
         email: '',
         whatsapp: ''
     });
+    const [honeypot, setHoneypot] = useState(''); // Bot detection
     const [paymentMethod, setPaymentMethod] = useState<'paypal' | 'card' | 'crypto'>('paypal');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+
+    // Rate limiting: 3 attempts per minute
+    const { checkRateLimit, isBlocked } = useRateLimit(3, 60000);
+
+    // reCAPTCHA
+    const { executeRecaptcha } = useGoogleReCaptcha();
 
     const handlePurchase = async (e: FormEvent) => {
         e.preventDefault();
+
+        // Bot detection - honeypot field should be empty
+        if (honeypot) {
+            return;
+        }
 
         if (!plan) {
             toast.error('No plan selected');
             return;
         }
 
-        setIsSubmitting(true);
+        // Check rate limit
+        const rateLimitCheck = checkRateLimit();
+        if (!rateLimitCheck.allowed) {
+            const timeRemaining = rateLimitCheck.resetTime
+                ? formatTimeRemaining(rateLimitCheck.resetTime)
+                : '1 minute';
+            toast.error(`Too many attempts. Please try again in ${timeRemaining}.`);
+            return;
+        }
 
-        // EmailJS Configuration
-        const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
-        const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID_CHECKOUT;
-        const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
-
+        // Validate form data with Zod
         try {
-            console.log('EmailJS Config:', { SERVICE_ID, TEMPLATE_ID, PUBLIC_KEY: PUBLIC_KEY ? 'Set' : 'Missing' });
+            const validatedData = checkoutFormSchema.parse(formData);
+            setValidationErrors({});
 
-            const response = await emailjs.send(
-                SERVICE_ID,
-                TEMPLATE_ID,
-                {
-                    to_name: 'Admin',
-                    from_name: `${formData.firstName} ${formData.lastName}`,
-                    from_email: formData.email,
-                    whatsapp_number: formData.whatsapp || 'Not provided',
-                    plan_name: plan.name,
-                    plan_price: plan.price,
-                    plan_period: plan.period,
-                    payment_method: paymentMethod.toUpperCase(),
-                    order_date: new Date().toLocaleString()
+            setIsSubmitting(true);
+
+            // Get reCAPTCHA token
+            if (!executeRecaptcha) {
+                toast.error('reCAPTCHA not ready');
+                setIsSubmitting(false);
+                return;
+            }
+
+            const token = await executeRecaptcha('checkout_form');
+
+            // Send to Backend API
+            const response = await fetch('http://localhost:3001/api/checkout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
                 },
-                PUBLIC_KEY
-            );
+                body: JSON.stringify({
+                    ...validatedData,
+                    planName: plan.name,
+                    planPrice: plan.price.toString(),
+                    planPeriod: plan.period,
+                    paymentMethod: paymentMethod.toUpperCase(),
+                    recaptchaToken: token
+                }),
+            });
 
-            console.log('EmailJS Response:', response);
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to place order');
+            }
+
             toast.success('Order placed successfully! Check your email for details.');
             navigate('/thank-you');
-        } catch (error: any) {
-            console.error('EmailJS Error Details:', error);
-
-            let errorMessage = 'Failed to place order. Please try again.';
-
-            if (error?.text) {
-                errorMessage = `Email service error: ${error.text}`;
-            } else if (error?.message) {
-                errorMessage = error.message;
-            } else if (error?.status) {
-                errorMessage = `Email service returned status ${error.status}`;
+        } catch (error) {
+            if (error instanceof ZodError) {
+                const errors: Record<string, string> = {};
+                error.issues.forEach((err: any) => {
+                    if (err.path[0]) {
+                        errors[err.path[0].toString()] = err.message;
+                    }
+                });
+                setValidationErrors(errors);
+                toast.error('Please check the form for errors.');
+            } else {
+                console.error('Submission error:', error);
+                toast.error('Failed to place order. Please try again later.');
             }
-
-            // Check for specific EmailJS errors
-            if (!SERVICE_ID || !TEMPLATE_ID || !PUBLIC_KEY) {
-                errorMessage = 'Email service is not properly configured. Please contact support.';
-            }
-
-            toast.error(errorMessage);
         } finally {
             setIsSubmitting(false);
         }
@@ -87,6 +118,14 @@ export function CheckoutPage() {
             ...prev,
             [name]: value
         }));
+        // Clear validation error for this field
+        if (validationErrors[name]) {
+            setValidationErrors(prev => {
+                const newErrors = { ...prev };
+                delete newErrors[name];
+                return newErrors;
+            });
+        }
     };
 
     if (!plan) {
@@ -117,8 +156,11 @@ export function CheckoutPage() {
                                     value={formData.firstName}
                                     onChange={handleChange}
                                     required
-                                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:border-cyan-400 transition-colors"
+                                    className={`w-full bg-gray-800 border ${validationErrors.firstName ? 'border-red-500' : 'border-gray-700'} rounded-lg px-4 py-2 focus:outline-none focus:border-cyan-400 transition-colors`}
                                 />
+                                {validationErrors.firstName && (
+                                    <p className="text-red-400 text-xs mt-1">{validationErrors.firstName}</p>
+                                )}
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-400 mb-1">Last Name</label>
@@ -128,10 +170,28 @@ export function CheckoutPage() {
                                     value={formData.lastName}
                                     onChange={handleChange}
                                     required
-                                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:border-cyan-400 transition-colors"
+                                    className={`w-full bg-gray-800 border ${validationErrors.lastName ? 'border-red-500' : 'border-gray-700'} rounded-lg px-4 py-2 focus:outline-none focus:border-cyan-400 transition-colors`}
                                 />
+                                {validationErrors.lastName && (
+                                    <p className="text-red-400 text-xs mt-1">{validationErrors.lastName}</p>
+                                )}
                             </div>
                         </div>
+
+                        {/* Honeypot field - hidden from users, catches bots */}
+                        <div className="hidden" aria-hidden="true">
+                            <label htmlFor="company">Company</label>
+                            <input
+                                type="text"
+                                id="company"
+                                name="company"
+                                value={honeypot}
+                                onChange={(e) => setHoneypot(e.target.value)}
+                                tabIndex={-1}
+                                autoComplete="off"
+                            />
+                        </div>
+
                         <div>
                             <label className="block text-sm font-medium text-gray-400 mb-1">Email Address</label>
                             <input
@@ -140,8 +200,11 @@ export function CheckoutPage() {
                                 value={formData.email}
                                 onChange={handleChange}
                                 required
-                                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:border-cyan-400 transition-colors"
+                                className={`w-full bg-gray-800 border ${validationErrors.email ? 'border-red-500' : 'border-gray-700'} rounded-lg px-4 py-2 focus:outline-none focus:border-cyan-400 transition-colors`}
                             />
+                            {validationErrors.email && (
+                                <p className="text-red-400 text-xs mt-1">{validationErrors.email}</p>
+                            )}
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-400 mb-1">WhatsApp Number (Optional)</label>
@@ -151,9 +214,20 @@ export function CheckoutPage() {
                                 value={formData.whatsapp}
                                 onChange={handleChange}
                                 placeholder="+1 234 567 8900"
-                                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:border-cyan-400 transition-colors"
+                                className={`w-full bg-gray-800 border ${validationErrors.whatsapp ? 'border-red-500' : 'border-gray-700'} rounded-lg px-4 py-2 focus:outline-none focus:border-cyan-400 transition-colors`}
                             />
+                            {validationErrors.whatsapp && (
+                                <p className="text-red-400 text-xs mt-1">{validationErrors.whatsapp}</p>
+                            )}
                         </div>
+
+                        {/* Rate limit warning */}
+                        {isBlocked && (
+                            <div className="flex items-center gap-2 p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+                                <Shield className="text-yellow-400" size={20} />
+                                <p className="text-yellow-400 text-sm">Rate limit active. Please wait before submitting again.</p>
+                            </div>
+                        )}
 
                         <div className="pt-6">
                             <h3 className="text-lg font-semibold mb-4">Payment Method</h3>
