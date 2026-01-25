@@ -24,8 +24,8 @@ export function ContactPage() {
         const PUBLIC_KEY = '5jt4ss4iP86wegTkN';
 
         try {
-            // 1. Call Backend API for Telegram Notification
-            await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001'}/api/contact`, {
+            // 1. Call PHP Script for Telegram Notification
+            await fetch('/telegram.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)

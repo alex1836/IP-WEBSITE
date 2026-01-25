@@ -35,9 +35,8 @@ export function CheckoutPage() {
         const PUBLIC_KEY = '5jt4ss4iP86wegTkN';
 
         try {
-            // 1. Call Backend API for Validation and Telegram Notification
-            // This solves CORS issues with Telegram API and adds server-side validation
-            const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001'}/api/checkout`, {
+            // 1. Call PHP Script for Telegram Notification (Works on Shared Hosting)
+            const response = await fetch('/telegram.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
