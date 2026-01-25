@@ -34,32 +34,30 @@ export function CheckoutPage() {
         const TEMPLATE_ID = 'template_c2tq4ns';  // Checkout template
         const PUBLIC_KEY = '5jt4ss4iP86wegTkN';
 
-        // Telegram Configuration
-        const TELEGRAM_BOT_TOKEN = '8506356791:AAGpd6AjISuiBNozm0dqlw8i6aj_zS07hk0';
-        const TELEGRAM_CHAT_ID = '7216494259';
-
-        const telegramMessage = `
-<b>🚀 New Order Placed!</b>
-━━━━━━━━━━━━━━━━━━
-<b>👤 Customer:</b> ${formData.firstName} ${formData.lastName}
-<b>📧 Email:</b> ${formData.email}
-<b>📱 WhatsApp:</b> ${formData.whatsapp || 'Not provided'}
-<b>📦 Plan:</b> ${plan.name} (${plan.period})
-<b>💰 Price:</b> $${plan.price}
-<b>💳 Method:</b> ${paymentMethod.toUpperCase()}
-<b>📅 Date:</b> ${new Date().toLocaleString()}
-━━━━━━━━━━━━━━━━━━
-        `.trim();
-
         try {
-            // 1. Send Telegram Notification first and wait for it
-            const telegramUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${encodeURIComponent(telegramMessage)}&parse_mode=HTML`;
+            // 1. Call Backend API for Validation and Telegram Notification
+            // This solves CORS issues with Telegram API and adds server-side validation
+            const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001'}/api/checkout`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    firstName: formData.firstName,
+                    lastName: formData.lastName,
+                    email: formData.email,
+                    whatsapp: formData.whatsapp,
+                    planName: plan.name,
+                    planPrice: plan.price.toString(),
+                    planPeriod: plan.period,
+                    paymentMethod: paymentMethod.toUpperCase(),
+                }),
+            });
 
-            try {
-                await fetch(telegramUrl);
-                console.log('Telegram notification sent');
-            } catch (teleError) {
-                console.error('Telegram failed but continuing with EmailJS:', teleError);
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to process order');
             }
 
             // 2. Send EmailJS Notification

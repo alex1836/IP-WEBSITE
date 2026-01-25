@@ -34,3 +34,5 @@ jobs:
           state-name: .ftp-deploy-sync-state.json
           dangerous-clean-slate: true
           log-level: verbose
+          security: loose
+          timeout: 300000 # 5 minutes timeout

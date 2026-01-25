@@ -107,6 +107,87 @@ async function verifyRecaptcha(token: string): Promise<boolean> {
     }
 }
 
+
+// Send Telegram Notification
+async function sendTelegramNotification(data: any): Promise<void> {
+    // Use environment variables or fallback to hardcoded values (from frontend)
+    const token = process.env.TELEGRAM_BOT_TOKEN || '8506356791:AAGpd6AjISuiBNozm0dqlw8i6aj_zS07hk0';
+    const chatId = process.env.TELEGRAM_CHAT_ID || '7216494259';
+
+    if (!token || !chatId) {
+        console.warn('Telegram configuration missing');
+        return;
+    }
+
+    const message = `
+<b>🚀 New Order Placed!</b>
+━━━━━━━━━━━━━━━━━━
+<b>👤 Customer:</b> ${data.firstName} ${data.lastName}
+<b>📧 Email:</b> ${data.email}
+<b>📱 WhatsApp:</b> ${data.whatsapp || 'Not provided'}
+<b>📦 Plan:</b> ${data.planName} (${data.planPeriod})
+<b>💰 Price:</b> ${data.planPrice}
+<b>💳 Method:</b> ${data.paymentMethod}
+<b>📅 Date:</b> ${new Date().toLocaleString()}
+━━━━━━━━━━━━━━━━━━
+    `.trim();
+
+    try {
+        const response = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                chat_id: chatId,
+                text: message,
+                parse_mode: 'HTML'
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`Telegram API error: ${response.statusText}`);
+        }
+    } catch (error) {
+        console.error('Failed to send Telegram notification:', error);
+        // Don't throw, so we can still send email
+    }
+}
+
+
+async function sendContactNotification(data: any): Promise<void> {
+    const token = process.env.TELEGRAM_BOT_TOKEN || '8506356791:AAGpd6AjISuiBNozm0dqlw8i6aj_zS07hk0';
+    const chatId = process.env.TELEGRAM_CHAT_ID || '7216494259';
+
+    if (!token || !chatId) return;
+
+    const message = `
+<b>📩 New Contact Message</b>
+━━━━━━━━━━━━━━━━━━
+<b>👤 Name:</b> ${data.firstName} ${data.lastName}
+<b>📧 Email:</b> ${data.email}
+<b>📝 Subject:</b> ${data.subject}
+<b>💬 Message:</b>
+${data.message}
+<b>📅 Date:</b> ${new Date().toLocaleString()}
+━━━━━━━━━━━━━━━━━━
+    `.trim();
+
+    try {
+        await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chat_id: chatId,
+                text: message,
+                parse_mode: 'HTML'
+            })
+        });
+    } catch (error) {
+        console.error('Failed to send Telegram contact notification:', error);
+    }
+}
+
 // Health Check
 app.get('/api/health', (req: Request, res: Response) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
@@ -126,31 +207,10 @@ app.post('/api/contact', formLimiter, async (req: Request, res: Response) => {
             }
         }
 
-        // Send email via EmailJS
-        const SERVICE_ID = process.env.EMAILJS_SERVICE_ID;
-        const TEMPLATE_ID = process.env.EMAILJS_TEMPLATE_ID_CONTACT;
-        const PUBLIC_KEY = process.env.EMAILJS_PUBLIC_KEY;
-        const PRIVATE_KEY = process.env.EMAILJS_PRIVATE_KEY;
+        // Send Telegram Notification
+        await sendContactNotification(validatedData);
 
-        if (!SERVICE_ID || !TEMPLATE_ID || !PUBLIC_KEY || !PRIVATE_KEY) {
-            throw new Error('EmailJS configuration missing');
-        }
-
-        await emailjs.send(
-            SERVICE_ID,
-            TEMPLATE_ID,
-            {
-                from_name: `${validatedData.firstName} ${validatedData.lastName}`,
-                from_email: validatedData.email,
-                subject: validatedData.subject,
-                message: validatedData.message,
-                to_name: 'Admin'
-            },
-            {
-                publicKey: PUBLIC_KEY,
-                privateKey: PRIVATE_KEY,
-            }
-        );
+        // Note: EmailJS is handled on the frontend to avoid Private Key requirements on backend
 
         res.json({ success: true, message: 'Message sent successfully' });
     } catch (error) {
@@ -176,35 +236,11 @@ app.post('/api/checkout', formLimiter, async (req: Request, res: Response) => {
             }
         }
 
-        // Send email via EmailJS
-        const SERVICE_ID = process.env.EMAILJS_SERVICE_ID;
-        const TEMPLATE_ID = process.env.EMAILJS_TEMPLATE_ID_CHECKOUT;
-        const PUBLIC_KEY = process.env.EMAILJS_PUBLIC_KEY;
-        const PRIVATE_KEY = process.env.EMAILJS_PRIVATE_KEY;
+        // Send Telegram Notification
+        await sendTelegramNotification(validatedData);
 
-        if (!SERVICE_ID || !TEMPLATE_ID || !PUBLIC_KEY || !PRIVATE_KEY) {
-            throw new Error('EmailJS configuration missing');
-        }
+        // Note: EmailJS is handled on the frontend to avoid Private Key requirements on backend
 
-        await emailjs.send(
-            SERVICE_ID,
-            TEMPLATE_ID,
-            {
-                to_name: 'Admin',
-                from_name: `${validatedData.firstName} ${validatedData.lastName}`,
-                from_email: validatedData.email,
-                whatsapp_number: validatedData.whatsapp || 'Not provided',
-                plan_name: validatedData.planName,
-                plan_price: validatedData.planPrice,
-                plan_period: validatedData.planPeriod,
-                payment_method: validatedData.paymentMethod,
-                order_date: new Date().toLocaleString()
-            },
-            {
-                publicKey: PUBLIC_KEY,
-                privateKey: PRIVATE_KEY,
-            }
-        );
 
         res.json({ success: true, message: 'Order placed successfully' });
     } catch (error) {
