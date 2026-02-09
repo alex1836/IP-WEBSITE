@@ -25,11 +25,22 @@ export function ContactPage() {
 
         try {
             // 1. Call PHP Script for Telegram Notification
-            await fetch('/telegram.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
-            });
+            try {
+                const response = await fetch('/telegram.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                const contentType = response.headers.get("content-type");
+                if (contentType && contentType.indexOf("application/json") !== -1) {
+                    await response.json();
+                } else {
+                    console.warn('Skipping Telegram notification: PHP script not executed (likely running on localhost)');
+                }
+            } catch (tgError) {
+                console.warn('Telegram notification skipped:', tgError);
+            }
 
             // 2. Send EmailJS Notification
             await emailjs.send(

@@ -23,6 +23,8 @@ import { Footer } from './components/Footer';
 
 import { Toaster } from 'react-hot-toast';
 
+import { ChatBot } from './components/ChatBot';
+
 function App() {
   const location = useLocation();
 
@@ -56,6 +58,7 @@ function App() {
         <Route path="/dmca" element={<DMCAPage />} />
       </Routes>
       <Footer />
+      <ChatBot />
     </div>
   );
 }

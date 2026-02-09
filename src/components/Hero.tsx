@@ -37,17 +37,28 @@ export function Hero() {
 
       <div className="max-w-7xl mx-auto relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
-          <div className="space-y-8 animate-fade-in">
-            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold leading-tight">
-              <span className="text-cyan-400">DeIPTV</span> Best Service 2026
-              <span className="block bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-                20,000+ Live TV Channels
+          <div className="space-y-8 animate-fade-in relative z-20">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-950/30 border border-cyan-500/20 backdrop-blur-sm">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
+              </span>
+              <span className="text-cyan-400 text-sm font-medium tracking-wide uppercase">#1 Rated Service in 2026</span>
+            </div>
+
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.1]">
+              DeIPTV <span className="text-gray-300 font-bold">Premium 2026</span>
+              <br />
+              <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">
+                20,000+ Live Channels
               </span>
             </h1>
 
-            <p className="text-xl text-gray-400 leading-relaxed">
-              Experience premium <strong>IPTV streaming</strong> with instant activation, anti-freeze technology,
-              and crystal-clear <strong>4K IPTV quality</strong>. Watch live TV, sports, movies & series with no buffering, no limits.
+            <p className="text-lg text-gray-300 leading-relaxed max-w-xl">
+              Unlock the ultimate entertainment experience with <strong>DeIPTV</strong>.
+              Enjoy <span className="text-cyan-400 font-semibold">anti-freeze 4K streaming</span>,
+              live sports, and premium movies & series instantly on any device.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4">
@@ -55,31 +66,43 @@ export function Hero() {
                 href="https://wa.me/message/HACCQ2SN2ZVNG1"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-lg font-semibold text-lg hover:shadow-lg hover:shadow-cyan-500/50 transition-all transform hover:scale-105 flex items-center justify-center"
+                className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl font-bold text-white shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 hover:scale-[1.02] transition-all duration-300 flex items-center justify-center gap-2 group"
               >
-                Start Free Trial
+                <span>Start Free Trial</span>
               </a>
               <button
                 onClick={() => navigate('/packages')}
-                className="px-8 py-4 bg-gray-800 hover:bg-gray-700 rounded-lg font-semibold text-lg transition-all flex items-center justify-center gap-2"
+                className="px-8 py-4 bg-white/5 border border-white/10 hover:bg-white/10 rounded-xl font-bold text-white backdrop-blur-sm transition-all duration-300 flex items-center justify-center gap-2"
               >
-                <Play size={20} />
+                <Play size={20} className="fill-current" />
                 Watch Now
               </button>
             </div>
 
-            <div className="flex flex-wrap gap-6 pt-4">
-              <div className="flex items-center gap-2 text-gray-300">
-                <CheckCircle className="text-cyan-400" size={20} />
-                <span>Instant Activation</span>
+            <div className="pt-2 grid grid-cols-2 gap-y-4 gap-x-6">
+              <div className="flex items-center gap-3">
+                <div className="p-1.5 rounded-full bg-cyan-500/10">
+                  <CheckCircle className="text-cyan-400" size={18} />
+                </div>
+                <span className="text-gray-300 text-sm font-medium">Instant Activation</span>
               </div>
-              <div className="flex items-center gap-2 text-gray-300">
-                <CheckCircle className="text-cyan-400" size={20} />
-                <span>24/7 Support</span>
+              <div className="flex items-center gap-3">
+                <div className="p-1.5 rounded-full bg-cyan-500/10">
+                  <CheckCircle className="text-cyan-400" size={18} />
+                </div>
+                <span className="text-gray-300 text-sm font-medium">24/7 Premium Support</span>
               </div>
-              <div className="flex items-center gap-2 text-gray-300">
-                <CheckCircle className="text-cyan-400" size={20} />
-                <span>Money-Back Guarantee</span>
+              <div className="flex items-center gap-3">
+                <div className="p-1.5 rounded-full bg-cyan-500/10">
+                  <CheckCircle className="text-cyan-400" size={18} />
+                </div>
+                <span className="text-gray-300 text-sm font-medium">99.9% Uptime</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="p-1.5 rounded-full bg-cyan-500/10">
+                  <CheckCircle className="text-cyan-400" size={18} />
+                </div>
+                <span className="text-gray-300 text-sm font-medium">Money-Back Guarantee</span>
               </div>
             </div>
           </div>

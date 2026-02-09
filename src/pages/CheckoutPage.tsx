@@ -36,27 +36,37 @@ export function CheckoutPage() {
 
         try {
             // 1. Call PHP Script for Telegram Notification (Works on Shared Hosting)
-            const response = await fetch('/telegram.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    firstName: formData.firstName,
-                    lastName: formData.lastName,
-                    email: formData.email,
-                    whatsapp: formData.whatsapp,
-                    planName: plan.name,
-                    planPrice: plan.price.toString(),
-                    planPeriod: plan.period,
-                    paymentMethod: paymentMethod.toUpperCase(),
-                }),
-            });
+            // We wrap this in a try-catch so it doesn't block the EmailJS part if it fails (e.g. on localhost without PHP)
+            try {
+                const response = await fetch('/telegram.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        firstName: formData.firstName,
+                        lastName: formData.lastName,
+                        email: formData.email,
+                        whatsapp: formData.whatsapp,
+                        planName: plan.name,
+                        planPrice: plan.price.toString(),
+                        planPeriod: plan.period,
+                        paymentMethod: paymentMethod.toUpperCase(),
+                    }),
+                });
 
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.error || 'Failed to process order');
+                // Check if we got a valid JSON response (PHP server running)
+                const contentType = response.headers.get("content-type");
+                if (contentType && contentType.indexOf("application/json") !== -1) {
+                    const data = await response.json();
+                    if (!response.ok) {
+                        console.error('Telegram notification failed:', data.error);
+                    }
+                } else {
+                    console.warn('Skipping Telegram notification: PHP script not executed (likely running on localhost)');
+                }
+            } catch (tgError) {
+                console.warn('Telegram notification skipped:', tgError);
             }
 
             // 2. Send EmailJS Notification
